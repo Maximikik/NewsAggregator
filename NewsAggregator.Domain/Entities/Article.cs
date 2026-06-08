@@ -8,9 +8,11 @@ public sealed class Article
       IBaseEntity,
       IHasDomainEvents
 {
-    private readonly List<Category> _categories = [];
+    private readonly List<ArticleCategory>
+            _articleCategories = [];
 
-    private readonly List<DomainEvent> _domainEvents = [];
+    private readonly List<DomainEvent>
+        _domainEvents = [];
 
     private Article()
     {
@@ -56,24 +58,12 @@ public sealed class Article
 
     public Source Source { get; private set; } = null!;
 
-    public IReadOnlyCollection<Category> Categories
-        => _categories.AsReadOnly();
+    public IReadOnlyCollection<ArticleCategory>
+        ArticleCategories
+            => _articleCategories.AsReadOnly();
 
     public IReadOnlyCollection<DomainEvent> DomainEvents
         => _domainEvents.AsReadOnly();
-
-    public void AddCategory(Category category)
-    {
-        if (_categories.Any(x => x.Id == category.Id))
-            return;
-
-        _categories.Add(category);
-
-        _domainEvents.Add(
-            new ArticleCategoryAssignedEvent(
-                Id,
-                category.Id));
-    }
 
     public void ClearDomainEvents()
     {

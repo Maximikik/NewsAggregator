@@ -11,11 +11,31 @@ public sealed class ArticleConfiguration
         EntityTypeBuilder<Article> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Ignore(x => x.DomainEvents);
+
         builder.Property(x => x.Title)
+            .IsRequired()
             .HasMaxLength(500);
 
         builder.Property(x => x.Description)
-            .HasMaxLength(5000);
+            .IsRequired()
+            .HasMaxLength(4000);
+
+        builder.Property(x => x.Url)
+            .IsRequired()
+            .HasMaxLength(2000);
+
+        builder.Property(x => x.PublishedAt)
+            .IsRequired();
+
+        builder.Ignore(x => x.DomainEvents);
+
+        builder.HasOne(x => x.Source)
+            .WithMany(x => x.Articles)
+            .HasForeignKey(x => x.SourceId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation(x => x.ArticleCategories)
+            .UsePropertyAccessMode(
+                PropertyAccessMode.Field);
     }
 }

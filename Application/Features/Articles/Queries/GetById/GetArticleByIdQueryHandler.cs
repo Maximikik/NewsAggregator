@@ -17,7 +17,7 @@ internal sealed class GetArticleByIdHandler(
         var article =
             await context.Articles
                 .Include(x => x.Source)
-                .Include(x => x.Categories)
+                .Include(x => x.ArticleCategories)
                 .FirstOrDefaultAsync(
                     x => x.Id == query.Id,
                     cancellationToken);

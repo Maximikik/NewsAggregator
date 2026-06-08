@@ -41,6 +41,9 @@ public static class DependencyInjection
         services.AddHttpClient();
         services.AddScoped<IRssParser, RssParser>();
 
+        services.AddScoped<IUserContext,
+            UserContext>();
+
         return services;
     }
 }

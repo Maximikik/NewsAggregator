@@ -2,8 +2,6 @@
 using NewsAggregator.Application.Common.Interfaces;
 using NewsAggregator.Domain.Common;
 using NewsAggregator.Domain.Entities;
-using NewsAggregator.Infrastructure.Persistence.Configurations;
-using System.Reflection;
 
 namespace NewsAggregator.Infrastructure;
 
@@ -24,17 +22,16 @@ public class NewsAggregatorDbContext
     }
 
     public DbSet<Article> Articles => Set<Article>();
-    public DbSet<Feed> Feeds => Set<Feed>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Source> Sources => Set<Source>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<UserArticleLike> UserArticleLikes => Set<UserArticleLike>();
+    public DbSet<UserCategoryPreference> UserCategoryPreferences => Set<UserCategoryPreference>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        modelBuilder.ApplyConfiguration(new ArticleConfiguration());
-        modelBuilder.ApplyConfiguration(new CategoryConfiguration());
-        modelBuilder.ApplyConfiguration(new SourceConfiguration());
+        modelBuilder.ApplyConfigurationsFromAssembly(
+            typeof(IBaseEntity).Assembly);
 
         base.OnModelCreating(modelBuilder);
     }

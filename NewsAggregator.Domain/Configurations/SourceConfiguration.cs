@@ -11,15 +11,22 @@ public sealed class SourceConfiguration
         EntityTypeBuilder<Source> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Ignore(x => x.DomainEvents);
+
         builder.Property(x => x.Name)
+            .IsRequired()
             .HasMaxLength(200);
 
         builder.Property(x => x.BaseUrl)
-            .HasMaxLength(500);
+            .IsRequired()
+            .HasMaxLength(1000);
 
-        builder.HasMany(x => x.Articles)
-            .WithOne(x => x.Source)
-            .HasForeignKey(x => x.SourceId);
+        builder.Property(x => x.IsActive)
+            .IsRequired();
+
+        builder.Ignore(x => x.DomainEvents);
+
+        builder.Navigation(x => x.Articles)
+            .UsePropertyAccessMode(
+                PropertyAccessMode.Field);
     }
 }

@@ -13,7 +13,7 @@ namespace NewsAggregator.Infrastructure.Migrations
 {
     [DbContext(typeof(NewsAggregatorDbContext))]
     [Migration("20260608000806_users")]
-    partial class users
+    partial class Users
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,4 +1,6 @@
 ﻿using Mediator;
+using NewsAggregator.Application.Common.Authentication;
+using NewsAggregator.Application.Features.Users.Queries.GetFeed;
 using NewsAggregator.WebAPI.Common.Mappings;
 using NewsAggregator.WebAPI.Contracts.Users;
 using NewsAggregator.WebAPI.Extensions;
@@ -21,6 +23,11 @@ public static class UserEndpoints
         group.MapPost(
             "/login",
             Login);
+
+        group.MapGet(
+            "/feed",
+            GetFeed)
+            .RequireAuthorization();
 
         return app;
     }
@@ -51,5 +58,20 @@ public static class UserEndpoints
                 cancellationToken);
 
         return result.ToHttpResult();
+    }
+
+    private static async Task<IResult>
+        GetFeed(
+        IMediator mediator,
+        IUserContext userContext,
+        CancellationToken cancellationToken)
+    {
+        var result =
+            await mediator.Send(
+                new GetFeedQuery(
+                    userContext.UserId),
+                cancellationToken);
+
+        return Results.Ok(result);
     }
 }

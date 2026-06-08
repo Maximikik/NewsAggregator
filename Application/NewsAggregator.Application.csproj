@@ -28,9 +28,7 @@
 
   <ItemGroup>
     <Folder Include="Features\Sources\Queries\GetAll\" />
-    <Folder Include="Features\Users\Events\" />
     <Folder Include="Features\Users\Shared\" />
-    <Folder Include="Features\Users\Queries\" />
   </ItemGroup>
 
 </Project>

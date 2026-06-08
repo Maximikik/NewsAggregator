@@ -1,43 +1,34 @@
-﻿using NewsAggregator.Domain.Common;
-using NewsAggregator.Domain.Events;
+﻿namespace NewsAggregator.Domain.Entities;
 
-namespace NewsAggregator.Domain.Entities;
-
-public sealed class Category :
-    AuditableEntity,
-    IBaseEntity,
-    IHasDomainEvents
+public sealed class Category
 {
-    private readonly List<Article> _articles = [];
+    private readonly List<ArticleCategory>
+        _articleCategories = [];
 
-    private readonly List<DomainEvent> _domainEvents = [];
+    private readonly List<UserCategoryPreference>
+        _preferences = [];
 
     private Category()
     {
     }
 
-    public Category(string name)
+    public Category(
+        string name)
     {
         Id = Guid.NewGuid();
 
         Name = name;
-
-        _domainEvents.Add(
-            new CategoryCreatedEvent(Id, Name));
     }
 
     public Guid Id { get; private set; }
 
     public string Name { get; private set; } = null!;
 
-    public IReadOnlyCollection<Article> Articles
-        => _articles.AsReadOnly();
+    public IReadOnlyCollection<ArticleCategory>
+        ArticleCategories =>
+            _articleCategories.AsReadOnly();
 
-    public IReadOnlyCollection<DomainEvent> DomainEvents
-        => _domainEvents.AsReadOnly();
-
-    public void ClearDomainEvents()
-    {
-        _domainEvents.Clear();
-    }
+    public IReadOnlyCollection<UserCategoryPreference>
+        Preferences =>
+            _preferences.AsReadOnly();
 }

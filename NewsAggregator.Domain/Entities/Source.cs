@@ -10,8 +10,6 @@ public sealed class Source :
 {
     private readonly List<Article> _articles = [];
 
-    private readonly List<Feed> _feeds = [];
-
     private readonly List<DomainEvent> _domainEvents = [];
 
     private Source()
@@ -44,9 +42,6 @@ public sealed class Source :
 
     public IReadOnlyCollection<Article> Articles
         => _articles.AsReadOnly();
-
-    public IReadOnlyCollection<Feed> Feeds
-        => _feeds.AsReadOnly();
 
     public IReadOnlyCollection<DomainEvent> DomainEvents
         => _domainEvents.AsReadOnly();

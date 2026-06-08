@@ -4,5 +4,4 @@ public sealed record ArticleResponse(
     Guid Id,
     string Title,
     string Description,
-    string Source,
-    IReadOnlyCollection<string> Categories);
+    string Source);

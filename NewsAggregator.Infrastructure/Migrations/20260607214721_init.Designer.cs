@@ -13,7 +13,7 @@ namespace NewsAggregator.Infrastructure.Migrations
 {
     [DbContext(typeof(NewsAggregatorDbContext))]
     [Migration("20260607214721_init")]
-    partial class init
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

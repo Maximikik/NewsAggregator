@@ -2,24 +2,27 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NewsAggregator.Domain.Entities;
 
-namespace NewsAggregator.Infrastructure.Persistence.Configurations;
+namespace NewsAggregator.Domain.Configurations;
 
-public sealed class CategoryConfiguration
-    : IEntityTypeConfiguration<Category>
+public sealed class UserConfiguration
+   : IEntityTypeConfiguration<User>
 {
     public void Configure(
-        EntityTypeBuilder<Category> builder)
+        EntityTypeBuilder<User> builder)
     {
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Name)
+        builder.Property(x => x.Email)
             .IsRequired()
-            .HasMaxLength(200);
+            .HasMaxLength(320);
 
-        builder.HasIndex(x => x.Name)
+        builder.Property(x => x.PasswordHash)
+            .IsRequired();
+
+        builder.HasIndex(x => x.Email)
             .IsUnique();
 
-        builder.Navigation(x => x.ArticleCategories)
+        builder.Navigation(x => x.Likes)
             .UsePropertyAccessMode(
                 PropertyAccessMode.Field);
 

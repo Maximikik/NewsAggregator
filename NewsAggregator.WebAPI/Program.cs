@@ -12,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddJwt(builder.Configuration);
 builder.Services.AddConfiguredCors(builder.Configuration);
@@ -27,7 +28,7 @@ if (app.Environment.IsDevelopment())
 
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<NewsAggregatorDbContext>();
-    db.Database.Migrate(); // TODO fix later
+    db.Database.Migrate();
 }
 
 app.UseCors("Default");

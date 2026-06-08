@@ -1,6 +1,8 @@
 ﻿using Mediator;
+using NewsAggregator.Application.Common.Authentication;
 using NewsAggregator.Application.Features.Articles.Commands.Import;
 using NewsAggregator.Application.Features.Articles.Queries.GetArticleById;
+using NewsAggregator.Application.Features.Users.Commands.LikeArticle;
 using NewsAggregator.WebAPI.Common.Mappings;
 using NewsAggregator.WebAPI.Contracts.Articles;
 using NewsAggregator.WebAPI.Extensions;
@@ -23,6 +25,11 @@ public static class ArticleEndpoints
         group.MapPost(
             "/import",
             ImportArticles);
+
+        group.MapPost(
+            "/{articleId:guid}/like",
+            LikeArticle)
+            .RequireAuthorization();
 
         group.MapGet(
             "/",
@@ -91,4 +98,21 @@ public static class ArticleEndpoints
 
         return result.ToHttpResult();
     }
+    private static async Task<IResult>
+    LikeArticle(
+    Guid articleId,
+    IUserContext userContext,
+    IMediator mediator,
+    CancellationToken cancellationToken)
+    {
+        var result =
+            await mediator.Send(
+                new LikeArticleCommand(
+                    userContext.UserId,
+                    articleId),
+                cancellationToken);
+
+        return result.ToHttpResult();
+    }
+
 }
