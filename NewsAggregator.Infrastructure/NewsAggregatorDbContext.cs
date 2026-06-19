@@ -27,6 +27,7 @@ public class NewsAggregatorDbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<UserArticleLike> UserArticleLikes => Set<UserArticleLike>();
     public DbSet<UserCategoryPreference> UserCategoryPreferences => Set<UserCategoryPreference>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

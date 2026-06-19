@@ -65,6 +65,30 @@ public sealed class Article
     public IReadOnlyCollection<DomainEvent> DomainEvents
         => _domainEvents.AsReadOnly();
 
+    public void AddCategory(
+        Category category)
+    {
+        if (_articleCategories.Any(
+            x => x.CategoryId == category.Id))
+        {
+            return;
+        }
+
+        _articleCategories.Add(
+            new ArticleCategory(
+                Id,
+                category.Id));
+    }
+
+    public void AddCategories(
+        IEnumerable<Category> categories)
+    {
+        foreach (var category in categories)
+        {
+            AddCategory(category);
+        }
+    }
+
     public void ClearDomainEvents()
     {
         _domainEvents.Clear();

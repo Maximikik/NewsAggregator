@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NewsAggregator.Application.Common.Behaviors;
 using NewsAggregator.Application.Common.Behaviours;
 using NewsAggregator.Application.Common.Interfaces;
-using NewsAggregator.Application.Features.Sources.Shared;
 
 namespace NewsAggregator.Application;
 
@@ -27,7 +26,7 @@ public static class DependencyInjection
             typeof(IPipelineBehavior<,>), typeof(ErrorLoggingBehaviour<,>));
 
         services.Scan(scan => scan
-           .FromAssemblyOf<SourceDto>()
+           .FromAssemblyOf<INewsAggregatorDbContext>()
            .AddClasses(classes =>
                classes.AssignableTo(typeof(IDomainEventHandler<>)))
            .AsImplementedInterfaces()

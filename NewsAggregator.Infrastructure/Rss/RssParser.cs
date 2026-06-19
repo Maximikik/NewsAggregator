@@ -10,7 +10,7 @@ public sealed class RssParser(
     : IRssParser
 {
 
-    public async Task<List<RssArticleModel>> ParseAsync(
+    public async Task<IReadOnlyCollection<RssArticleModel>> ParseAsync(
         string url,
         CancellationToken cancellationToken)
     {
@@ -24,11 +24,28 @@ public sealed class RssParser(
         var feed = SyndicationFeed.Load(reader);
 
         return feed.Items
-            .Select(x => new RssArticleModel(
-                x.Title.Text,
-                x.Summary?.Text ?? "",
-                x.Links.FirstOrDefault()?.Uri.ToString() ?? "",
-                x.PublishDate.UtcDateTime))
-            .ToList();
+                .Select(
+                    item =>
+                    {
+                        var categories =
+                            item.Categories
+                                .Select(
+                                    x => x.Name)
+                                .Where(
+                                    x => !string.IsNullOrWhiteSpace(x))
+                                .Distinct()
+                                .ToList();
+
+                        return new RssArticleModel(
+                            item.Title.Text,
+                            item.Summary?.Text ?? "",
+                            item.Links
+                                .FirstOrDefault()?
+                                .Uri
+                                .ToString() ?? "",
+                            item.PublishDate.UtcDateTime,
+                            categories);
+                    })
+                .ToList();
     }
 }

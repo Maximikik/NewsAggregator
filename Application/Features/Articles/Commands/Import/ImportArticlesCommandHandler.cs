@@ -7,56 +7,91 @@ using NewsAggregator.Domain.Entities;
 
 namespace NewsAggregator.Application.Features.Articles.Import;
 
-internal sealed class ImportArticlesHandler(
-    INewsAggregatorDbContext context,
-    IRssParser rssParser)
-    : IRequestHandler<
-        ImportArticlesCommand,
-        Result>
+internal sealed class ImportArticlesCommandHandler(
+    INewsAggregatorDbContext _context,
+    IRssParser _rssParser)
+    : ICommandHandler<
+        ImportArticlesCommand, Result>
 {
-    public async ValueTask<Result>
-        Handle(
-        ImportArticlesCommand command,
-        CancellationToken cancellationToken)
+    public async ValueTask<Result> Handle(ImportArticlesCommand command, CancellationToken cancellationToken)
     {
         var source =
-            await context.Sources
+            await _context.Sources
                 .FirstOrDefaultAsync(
-                    x => x.Id == command.SourceId,
+                    x =>
+                        x.Id ==
+                        command.SourceId,
                     cancellationToken);
 
         if (source is null)
         {
             return Result.Failure(
-                Errors.NotFound("Source"));
+                Errors.NotFound(
+                    "Source not found"));
         }
 
         var rssArticles =
-            await rssParser.ParseAsync(
-                command.FeedUrl,
+            await _rssParser.ParseAsync(
+                source.BaseUrl,
                 cancellationToken);
+
+        var categories =
+            await _context.Categories
+                .ToDictionaryAsync(
+                    x => x.Name,
+                    cancellationToken);
 
         foreach (var rssArticle in rssArticles)
         {
             var exists =
-                await context.Articles
+                await _context.Articles
                     .AnyAsync(
-                        x => x.Url == rssArticle.Url,
+                        x =>
+                            x.Url ==
+                            rssArticle.Url,
                         cancellationToken);
 
             if (exists)
+            {
                 continue;
+            }
 
-            context.Articles.Add(
+            var article =
                 new Article(
                     rssArticle.Title,
                     rssArticle.Description,
                     rssArticle.Url,
                     rssArticle.PublishedAt,
-                    source.Id));
+                    source.Id);
+
+            foreach (var categoryName
+                in rssArticle.Categories)
+            {
+                if (!categories.TryGetValue(
+                    categoryName,
+                    out var category))
+                {
+                    category =
+                        new Category(
+                            categoryName);
+
+                    categories.Add(
+                        categoryName,
+                        category);
+
+                    _context.Categories.Add(
+                        category);
+                }
+
+                article.AddCategory(
+                    category);
+            }
+
+            _context.Articles.Add(
+                article);
         }
 
-        await context.SaveChangesAsync(
+        await _context.SaveChangesAsync(
             cancellationToken);
 
         return Result.Success();

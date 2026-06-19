@@ -7,15 +7,14 @@ using NewsAggregator.Application.Features.Articles.Shared;
 namespace NewsAggregator.Application.Features.Articles.Queries.GetArticleById;
 
 internal sealed class GetArticleByIdHandler(
-    INewsAggregatorDbContext context)
+    INewsAggregatorDbContext _context)
     : IRequestHandler<
-        GetArticleByIdQuery,
-        Result<ArticleResponse>>
+        GetArticleByIdQuery, Result<ArticleResponse>>
 {
     public async ValueTask<Result<ArticleResponse>> Handle(GetArticleByIdQuery query, CancellationToken cancellationToken)
     {
         var article =
-            await context.Articles
+            await _context.Articles
                 .Include(x => x.Source)
                 .Include(x => x.ArticleCategories)
                 .FirstOrDefaultAsync(

@@ -7,15 +7,14 @@ using NewsAggregator.Domain.Entities;
 namespace NewsAggregator.Application.Features.Categories.Commands.Create;
 
 internal sealed class CreateCategoryHandler(
-    INewsAggregatorDbContext context)
+    INewsAggregatorDbContext _context)
     : IRequestHandler<
-        CreateCategoryCommand,
-        Result<CreateCategoryResponse>>
+        CreateCategoryCommand, Result<CreateCategoryResponse>>
 {
     public async ValueTask<Result<CreateCategoryResponse>> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
     {
         var exists =
-            await context.Categories
+            await _context.Categories
                 .AnyAsync(
                     x => x.Name == command.Name,
                     cancellationToken);
@@ -31,9 +30,9 @@ internal sealed class CreateCategoryHandler(
         var category =
             new Category(command.Name);
 
-        context.Categories.Add(category);
+        _context.Categories.Add(category);
 
-        await context.SaveChangesAsync(
+        await _context.SaveChangesAsync(
             cancellationToken);
 
         return Result<CreateCategoryResponse>

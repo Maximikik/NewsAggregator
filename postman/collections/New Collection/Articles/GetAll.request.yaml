@@ -1,0 +1,5 @@
+$kind: http-request
+name: GetAll
+url: ""
+method: GET
+order: 612761904179939

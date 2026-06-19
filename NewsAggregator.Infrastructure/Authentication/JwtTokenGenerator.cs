@@ -8,7 +8,7 @@ using System.Text;
 
 namespace NewsAggregator.Infrastructure.Authentication;
 
-public sealed class JwtTokenGenerator
+internal sealed class JwtTokenGenerator
     : IJwtTokenGenerator
 {
     private readonly JwtOptions _options;

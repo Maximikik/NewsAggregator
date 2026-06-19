@@ -2,23 +2,18 @@
 using Microsoft.EntityFrameworkCore;
 using NewsAggregator.Application.Common.Interfaces;
 using NewsAggregator.Application.Common.Results;
+using NewsAggregator.Application.Features.Sources.Shared;
 
 namespace NewsAggregator.Application.Features.Sources.Queries.GetById;
 
 internal sealed class GetSourceByIdHandler(
-    INewsAggregatorDbContext context)
+    INewsAggregatorDbContext _context)
     : IRequestHandler<
-        GetSourceByIdQuery,
-        Result<SourceResponse>>
+        GetSourceByIdQuery, Result<SourceResponse>>
 {
-    public async ValueTask<
-        Result<SourceResponse>>
-        Handle(
-        GetSourceByIdQuery query,
-        CancellationToken cancellationToken)
+    public async ValueTask<Result<SourceResponse>> Handle(GetSourceByIdQuery query, CancellationToken cancellationToken)
     {
-        var source =
-            await context.Sources
+        var source = await _context.Sources
                 .FirstOrDefaultAsync(
                     x => x.Id == query.Id,
                     cancellationToken);
@@ -32,9 +27,7 @@ internal sealed class GetSourceByIdHandler(
 
         return Result<SourceResponse>
             .Success(
-                new SourceResponse(
-                    source.Id,
-                    source.Name,
-                    source.BaseUrl));
+                SourceMapper.ToResponse(source)
+                );
     }
 }

@@ -7,20 +7,22 @@ using NewsAggregator.Application.Features.Articles.Shared;
 namespace NewsAggregator.Application.Features.Articles.Queries.GetAll;
 
 internal sealed class GetAllArticlesQueryHandler(
-    INewsAggregatorDbContext context)
+    INewsAggregatorDbContext _context)
     : IRequestHandler<
         GetAllArticlesQuery, Result<ArticlesResponse>>
 {
     public async ValueTask<Result<ArticlesResponse>> Handle(GetAllArticlesQuery request, CancellationToken cancellationToken)
     {
-        var articles = await context.Articles
+        var articles = await _context.Articles
             .Include(x => x.Source)
-            .Skip((request.pageNumber - 1) * request.pageSize)
-            .Take(request.pageSize)
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
             .ToListAsync(cancellationToken);
 
         return Result<ArticlesResponse>
             .Success(new ArticlesResponse(
+                request.PageNumber,
+                request.PageSize,
                 articles.Select(ArticleMapper.ToResponse))
             );
     }

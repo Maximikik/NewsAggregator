@@ -22,7 +22,7 @@ public sealed class DomainEventDispatcher(
         foreach (var handler in handlers)
         {
             var method =
-                handlerType.GetMethod(nameof(IDomainEventHandler<DomainEvent>.Handle));
+                handlerType.GetMethod(nameof(IDomainEventHandler<>.Handle));
 
             await (Task)method!.Invoke(
                 handler,

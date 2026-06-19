@@ -6,18 +6,11 @@ using NewsAggregator.Domain.Entities;
 
 namespace NewsAggregator.Application.Features.Users.Commands.Register;
 
-internal sealed class RegisterUserCommandHandler
+internal sealed class RegisterUserCommandHandler(
+    INewsAggregatorDbContext _context)
     : ICommandHandler<
         RegisterUserCommand, Result<Guid>>
 {
-    private readonly INewsAggregatorDbContext _context;
-
-    public RegisterUserCommandHandler(
-        INewsAggregatorDbContext context)
-    {
-        _context = context;
-    }
-
     public async ValueTask<Result<Guid>> Handle(
         RegisterUserCommand command,
         CancellationToken cancellationToken)

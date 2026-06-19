@@ -1,4 +1,5 @@
 ﻿using Mediator;
+using NewsAggregator.Application.Features.Sources.Queries.GetAll;
 using NewsAggregator.Application.Features.Sources.Queries.GetById;
 using NewsAggregator.WebAPI.Common.Mappings;
 using NewsAggregator.WebAPI.Contracts.Sources;
@@ -19,14 +20,17 @@ public static class SourceEndpoints
             CreateSource);
 
         group.MapGet(
+            "/",
+            GetAll);
+
+        group.MapGet(
             "/{id:guid}",
             GetSourceById);
 
         return app;
     }
 
-    private static async Task<IResult>
-        CreateSource(
+    private static async Task<IResult> CreateSource(
         CreateSourceRequest request,
         IMediator mediator,
         CancellationToken cancellationToken)
@@ -39,8 +43,19 @@ public static class SourceEndpoints
         return result.ToHttpResult();
     }
 
-    private static async Task<IResult>
-        GetSourceById(
+    private static async Task<IResult> GetAll(
+        IMediator mediator,
+        CancellationToken cancellationToken)
+    {
+        var result =
+            await mediator.Send(
+                new GetAllSourcesQuery(),
+                cancellationToken);
+
+        return result.ToHttpResult();
+    }
+
+    private static async Task<IResult> GetSourceById(
         Guid id,
         IMediator mediator,
         CancellationToken cancellationToken)

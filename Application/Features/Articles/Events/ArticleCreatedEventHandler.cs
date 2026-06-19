@@ -8,9 +8,7 @@ internal sealed class ArticleCreatedEventHandler(
     ILogger<ArticleCreatedEventHandler> logger)
     : IDomainEventHandler<ArticleCreatedEvent>
 {
-    public Task Handle(
-        ArticleCreatedEvent domainEvent,
-        CancellationToken cancellationToken)
+    public Task Handle(ArticleCreatedEvent domainEvent, CancellationToken cancellationToken)
     {
         logger.LogInformation(
             "Article created: {Title}",

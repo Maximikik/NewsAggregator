@@ -4,16 +4,14 @@ using NewsAggregator.Domain.Events;
 
 namespace NewsAggregator.Application.Features.Articles.Events;
 
-public sealed class ArticleCategoryAssignedEventHandler(
+internal sealed class ArticleCategoryAssignedEventHandler(
     ILogger<ArticleCategoryAssignedEventHandler> logger)
     : IDomainEventHandler<ArticleCategoryAssignedEvent>
 {
-    public Task Handle(
-        ArticleCategoryAssignedEvent domainEvent,
-        CancellationToken cancellationToken)
+    public Task Handle(ArticleCategoryAssignedEvent domainEvent, CancellationToken cancellationToken)
     {
         logger.LogInformation(
-            "Article created: {CategoryId}",
+            "Article category assigned: {CategoryId}",
             domainEvent.CategoryId);
 
         return Task.CompletedTask;

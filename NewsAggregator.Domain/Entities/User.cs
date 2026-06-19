@@ -4,8 +4,9 @@ public sealed class User
 {
     private readonly List<UserArticleLike> _likes = [];
 
-    private readonly List<UserCategoryPreference>
-        _preferences = [];
+    private readonly List<UserCategoryPreference> _preferences = [];
+
+    private readonly List<RefreshToken> _refreshTokens = [];
 
     private User()
     {
@@ -35,4 +36,8 @@ public sealed class User
     public IReadOnlyCollection<UserCategoryPreference>
         Preferences =>
             _preferences.AsReadOnly();
+
+    public IReadOnlyCollection<RefreshToken>
+        RefreshTokens =>
+            _refreshTokens.AsReadOnly();
 }

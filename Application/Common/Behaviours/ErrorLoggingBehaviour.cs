@@ -3,8 +3,8 @@ using Microsoft.Extensions.Logging;
 
 namespace NewsAggregator.Application.Common.Behaviours;
 
-public sealed class ErrorLoggingBehaviour<TMessage, TResponse> : MessageExceptionHandler<TMessage, TResponse>
- where TMessage : notnull, IMessage
+internal sealed class ErrorLoggingBehaviour<TMessage, TResponse> : MessageExceptionHandler<TMessage, TResponse>
+    where TMessage : notnull, IMessage
 {
     private readonly ILogger<ErrorLoggingBehaviour<TMessage, TResponse>> _logger;
 

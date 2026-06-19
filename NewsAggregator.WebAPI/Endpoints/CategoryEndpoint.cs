@@ -26,8 +26,7 @@ public static class CategoryEndpoints
         return app;
     }
 
-    private static async Task<IResult>
-        CreateCategory(
+    private static async Task<IResult> CreateCategory(
         CreateCategoryRequest request,
         IMediator mediator,
         CancellationToken cancellationToken)
@@ -40,8 +39,7 @@ public static class CategoryEndpoints
         return result.ToHttpResult();
     }
 
-    private static async Task<IResult>
-        GetCategoryById(
+    private static async Task<IResult> GetCategoryById(
         Guid id,
         IMediator mediator,
         CancellationToken cancellationToken)

@@ -17,6 +17,8 @@ public interface INewsAggregatorDbContext
 
     DbSet<UserCategoryPreference> UserCategoryPreferences { get; }
 
+    DbSet<RefreshToken> RefreshTokens { get; }
+
     Task<int> SaveChangesAsync(
         CancellationToken cancellationToken = default);
 }

@@ -26,9 +26,4 @@
     <ProjectReference Include="..\NewsAggregator.Domain\NewsAggregator.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Sources\Queries\GetAll\" />
-    <Folder Include="Features\Users\Shared\" />
-  </ItemGroup>
-
 </Project>

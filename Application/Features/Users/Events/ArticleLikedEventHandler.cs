@@ -5,18 +5,10 @@ using NewsAggregator.Domain.Events;
 
 namespace NewsAggregator.Application.Features.Users.Events;
 
-public sealed class ArticleLikedEventHandler
+internal sealed class ArticleLikedEventHandler(
+    INewsAggregatorDbContext _context)
     : IDomainEventHandler<ArticleLikedEvent>
 {
-    private readonly INewsAggregatorDbContext
-        _context;
-
-    public ArticleLikedEventHandler(
-        INewsAggregatorDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task Handle(
         ArticleLikedEvent notification,
         CancellationToken cancellationToken)

@@ -6,20 +6,11 @@ using NewsAggregator.Domain.Entities;
 
 namespace NewsAggregator.Application.Features.Users.Commands.LikeArticle;
 
-internal sealed class LikeArticleCommandHandler
+internal sealed class LikeArticleCommandHandler(
+    INewsAggregatorDbContext _context)
     : ICommandHandler<
-        LikeArticleCommand,
-        Result>
+        LikeArticleCommand, Result>
 {
-    private readonly INewsAggregatorDbContext
-        _context;
-
-    public LikeArticleCommandHandler(
-        INewsAggregatorDbContext context)
-    {
-        _context = context;
-    }
-
     public async ValueTask<Result> Handle(LikeArticleCommand command, CancellationToken cancellationToken)
     {
         var exists =

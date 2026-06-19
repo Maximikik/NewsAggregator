@@ -4,7 +4,7 @@ using NewsAggregator.Domain.Events;
 
 namespace NewsAggregator.Application.Features.Sources.Events;
 
-public sealed class SourceCreatedEventHandler(
+internal sealed class SourceCreatedEventHandler(
     ILogger<SourceCreatedEventHandler> logger)
     : IDomainEventHandler<SourceCreatedEvent>
 {

@@ -6,25 +6,12 @@ using NewsAggregator.Application.Features.Articles.Queries.GetArticleById;
 
 namespace NewsAggregator.Application.Features.Users.Queries.GetFeed;
 
-public sealed class GetFeedHandler
+public sealed class GetFeedQueryHandler(
+    INewsAggregatorDbContext _context)
     : IQueryHandler<
-        GetFeedQuery,
-        Result<List<ArticleResponse>>>
+        GetFeedQuery, Result<List<ArticleResponse>>>
 {
-    private readonly INewsAggregatorDbContext
-        _context;
-
-    public GetFeedHandler(
-        INewsAggregatorDbContext context)
-    {
-        _context = context;
-    }
-
-    public async ValueTask<
-        Result<List<ArticleResponse>>>
-        Handle(
-            GetFeedQuery query,
-            CancellationToken cancellationToken)
+    public async ValueTask<Result<List<ArticleResponse>>> Handle(GetFeedQuery query, CancellationToken cancellationToken)
     {
         var preferences =
             await _context
@@ -45,6 +32,8 @@ public sealed class GetFeedHandler
             await _context.Articles
                 .Include(
                     x => x.ArticleCategories)
+                .Include(
+                    x => x.Source)
                 .OrderByDescending(
                     x => x.PublishedAt)
                 .ToListAsync(

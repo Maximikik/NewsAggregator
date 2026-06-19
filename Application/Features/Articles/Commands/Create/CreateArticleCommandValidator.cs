@@ -2,7 +2,7 @@
 
 namespace NewsAggregator.Application.Features.Articles.Commands.Create;
 
-public class CreateArticleCommandValidator : AbstractValidator<CreateArticleCommand>
+internal class CreateArticleCommandValidator : AbstractValidator<CreateArticleCommand>
 {
     public CreateArticleCommandValidator()
     {

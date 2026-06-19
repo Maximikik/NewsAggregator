@@ -2,7 +2,8 @@
 
 namespace NewsAggregator.Application.Features.Articles.Queries.GetArticleById;
 
-public class GetArticleByIdQueryValidator : AbstractValidator<GetArticleByIdQuery>
+internal class GetArticleByIdQueryValidator
+    : AbstractValidator<GetArticleByIdQuery>
 {
     public GetArticleByIdQueryValidator()
     {

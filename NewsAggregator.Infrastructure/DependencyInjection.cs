@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hangfire;
+using Hangfire.PostgreSql;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NewsAggregator.Application.Common.Authentication;
@@ -37,12 +39,27 @@ public static class DependencyInjection
         services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
 
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
 
         services.AddHttpClient();
-        services.AddScoped<IRssParser, RssParser>();
+
+        services.AddScoped<IRssParser,
+            RssParser>();
 
         services.AddScoped<IUserContext,
             UserContext>();
+
+        var connectionString = configuration
+            .GetConnectionString(
+                "DefaultConnection")
+            ?? throw new InvalidOperationException();
+
+        services.AddHangfire(
+            x =>
+                x.UsePostgreSqlStorage(
+                    options =>
+                        options.UseNpgsqlConnection(
+                            connectionString)));
 
         return services;
     }

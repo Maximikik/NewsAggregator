@@ -42,8 +42,7 @@ public static class ArticleEndpoints
         return app;
     }
 
-    private static async Task<IResult>
-        CreateArticle(
+    private static async Task<IResult> CreateArticle(
         CreateArticleRequest request,
         IMediator mediator,
         CancellationToken cancellationToken)
@@ -55,55 +54,24 @@ public static class ArticleEndpoints
         return result.ToHttpResult();
     }
 
-    private static async Task<IResult>
-        ImportArticles(
+    private static async Task<IResult> ImportArticles(
         ImportArticlesRequest request,
         IMediator mediator,
         CancellationToken cancellationToken)
     {
-        var command = new ImportArticlesCommand(
-            request.SourceId,
-            request.FeedUrl);
-
         var result = await mediator.Send(
-            command,
+            new ImportArticlesCommand(
+                request.SourceId),
             cancellationToken);
 
         return result.ToHttpResult();
     }
 
-    private static async Task<IResult>
-        GetAllArticles(
-        [AsParameters] GetAllArticlesRequest request,
+    private static async Task<IResult> LikeArticle(
+        Guid articleId,
+        IUserContext userContext,
         IMediator mediator,
         CancellationToken cancellationToken)
-    {
-        var result = await mediator.Send(
-            request.ToQuery(),
-            cancellationToken);
-
-        return result.ToHttpResult();
-    }
-
-    private static async Task<IResult>
-        GetArticleById(
-        Guid id,
-        IMediator mediator,
-        CancellationToken cancellationToken)
-    {
-        var result =
-            await mediator.Send(
-                new GetArticleByIdQuery(id),
-                cancellationToken);
-
-        return result.ToHttpResult();
-    }
-    private static async Task<IResult>
-    LikeArticle(
-    Guid articleId,
-    IUserContext userContext,
-    IMediator mediator,
-    CancellationToken cancellationToken)
     {
         var result =
             await mediator.Send(
@@ -115,4 +83,28 @@ public static class ArticleEndpoints
         return result.ToHttpResult();
     }
 
+    private static async Task<IResult> GetAllArticles(
+        [AsParameters] GetAllArticlesRequest request,
+        IMediator mediator,
+        CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(
+            request.ToQuery(),
+            cancellationToken);
+
+        return result.ToHttpResult();
+    }
+
+    private static async Task<IResult> GetArticleById(
+        Guid id,
+        IMediator mediator,
+        CancellationToken cancellationToken)
+    {
+        var result =
+            await mediator.Send(
+                new GetArticleByIdQuery(id),
+                cancellationToken);
+
+        return result.ToHttpResult();
+    }
 }

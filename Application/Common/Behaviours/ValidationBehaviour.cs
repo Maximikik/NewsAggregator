@@ -3,7 +3,7 @@ using Mediator;
 
 namespace NewsAggregator.Application.Common.Behaviors;
 
-public sealed class ValidationBehavior<TMessage, TResponse>
+internal sealed class ValidationBehavior<TMessage, TResponse>
     : IPipelineBehavior<TMessage, TResponse>
     where TMessage : IMessage
 {

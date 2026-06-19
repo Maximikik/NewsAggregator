@@ -7,19 +7,14 @@ using NewsAggregator.Domain.Entities;
 namespace NewsAggregator.Application.Features.Articles.Commands.Create;
 
 internal sealed class CreateArticleHandler(
-    INewsAggregatorDbContext context)
+    INewsAggregatorDbContext _context)
     : IRequestHandler<
-        CreateArticleCommand,
-        Result<CreateArticleResponse>>
+        CreateArticleCommand, Result<CreateArticleResponse>>
 {
-    public async ValueTask<
-        Result<CreateArticleResponse>>
-        Handle(
-        CreateArticleCommand command,
-        CancellationToken cancellationToken)
+    public async ValueTask<Result<CreateArticleResponse>> Handle(CreateArticleCommand command, CancellationToken cancellationToken)
     {
         var sourceExists =
-            await context.Sources
+            await _context.Sources
                 .AnyAsync(
                     x => x.Id == command.SourceId,
                     cancellationToken);
@@ -39,9 +34,9 @@ internal sealed class CreateArticleHandler(
                 DateTime.UtcNow,
                 command.SourceId);
 
-        context.Articles.Add(article);
+        _context.Articles.Add(article);
 
-        await context.SaveChangesAsync(
+        await _context.SaveChangesAsync(
             cancellationToken);
 
         return Result<CreateArticleResponse>

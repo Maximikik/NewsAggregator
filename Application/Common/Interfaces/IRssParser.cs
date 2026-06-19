@@ -4,7 +4,7 @@ namespace NewsAggregator.Application.Common.Interfaces;
 
 public interface IRssParser
 {
-    Task<List<RssArticleModel>> ParseAsync(
+    Task<IReadOnlyCollection<RssArticleModel>> ParseAsync(
         string url,
         CancellationToken cancellationToken);
 }

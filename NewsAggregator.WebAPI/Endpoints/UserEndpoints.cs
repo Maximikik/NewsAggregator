@@ -1,5 +1,7 @@
 ﻿using Mediator;
 using NewsAggregator.Application.Common.Authentication;
+using NewsAggregator.Application.Features.Users.Commands.Logout;
+using NewsAggregator.Application.Features.Users.Commands.Refresh;
 using NewsAggregator.Application.Features.Users.Queries.GetFeed;
 using NewsAggregator.WebAPI.Common.Mappings;
 using NewsAggregator.WebAPI.Contracts.Users;
@@ -24,6 +26,14 @@ public static class UserEndpoints
             "/login",
             Login);
 
+        group.MapPost(
+            "/refresh",
+            Refresh);
+
+        group.MapPost(
+            "/logout",
+            Logout);
+
         group.MapGet(
             "/feed",
             GetFeed)
@@ -32,8 +42,7 @@ public static class UserEndpoints
         return app;
     }
 
-    private static async Task<IResult>
-        Register(
+    private static async Task<IResult> Register(
         RegisterUserRequest request,
         IMediator mediator,
         CancellationToken cancellationToken)
@@ -46,8 +55,7 @@ public static class UserEndpoints
         return result.ToHttpResult();
     }
 
-    private static async Task<IResult>
-        Login(
+    private static async Task<IResult> Login(
         LoginUserRequest request,
         IMediator mediator,
         CancellationToken cancellationToken)
@@ -60,8 +68,33 @@ public static class UserEndpoints
         return result.ToHttpResult();
     }
 
-    private static async Task<IResult>
-        GetFeed(
+    private static async Task<IResult> Refresh(
+       string refreshToken,
+       IMediator mediator,
+       CancellationToken cancellationToken)
+    {
+        var result =
+            await mediator.Send(
+                new RefreshTokenCommand(refreshToken),
+                cancellationToken);
+
+        return result.ToHttpResult();
+    }
+
+    private static async Task<IResult> Logout(
+       string refreshToken,
+       IMediator mediator,
+       CancellationToken cancellationToken)
+    {
+        var result =
+            await mediator.Send(
+                new LogoutCommand(refreshToken),
+                cancellationToken);
+
+        return result.ToHttpResult();
+    }
+
+    private static async Task<IResult> GetFeed(
         IMediator mediator,
         IUserContext userContext,
         CancellationToken cancellationToken)

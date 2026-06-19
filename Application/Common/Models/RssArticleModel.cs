@@ -4,4 +4,5 @@ public sealed record RssArticleModel(
     string Title,
     string Description,
     string Url,
-    DateTime PublishedAt);
+    DateTime PublishedAt,
+    IReadOnlyList<string> Categories);

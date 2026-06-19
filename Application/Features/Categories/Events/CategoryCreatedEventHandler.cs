@@ -4,13 +4,11 @@ using NewsAggregator.Domain.Events;
 
 namespace NewsAggregator.Application.Features.Categories.Events;
 
-public sealed class CategoryCreatedEventHandler(
+internal sealed class CategoryCreatedEventHandler(
     ILogger<CategoryCreatedEventHandler> logger)
     : IDomainEventHandler<CategoryCreatedEvent>
 {
-    public Task Handle(
-        CategoryCreatedEvent notification,
-        CancellationToken cancellationToken)
+    public Task Handle(CategoryCreatedEvent notification, CancellationToken cancellationToken)
     {
         logger.LogInformation(
             "Category created: {Name}",

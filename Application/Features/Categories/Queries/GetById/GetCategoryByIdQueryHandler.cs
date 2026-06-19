@@ -2,17 +2,18 @@
 using Microsoft.EntityFrameworkCore;
 using NewsAggregator.Application.Common.Interfaces;
 using NewsAggregator.Application.Common.Results;
+using NewsAggregator.Application.Features.Categories.Shared;
 
 namespace NewsAggregator.Application.Features.Categories.Queries.GetById;
 
 internal class GetCategoryByIdQueryHandler(
-    INewsAggregatorDbContext context)
+    INewsAggregatorDbContext _context)
     : IRequestHandler<GetCategoryByIdQuery, Result<CategoryResponse>>
 {
     public async ValueTask<Result<CategoryResponse>> Handle(GetCategoryByIdQuery query, CancellationToken cancellationToken)
     {
         var category =
-                  await context.Categories
+                  await _context.Categories
                       .FirstOrDefaultAsync(
                           x => x.Id == query.Id,
                           cancellationToken);
@@ -26,8 +27,7 @@ internal class GetCategoryByIdQueryHandler(
 
         return Result<CategoryResponse>
             .Success(
-                new CategoryResponse(
-                    category.Id,
-                    category.Name));
+                CategoryMapper.ToResponse(category)
+                );
     }
 }

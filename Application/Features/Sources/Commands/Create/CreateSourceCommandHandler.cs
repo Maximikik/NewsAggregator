@@ -8,7 +8,7 @@ using NewsAggregator.Domain.Entities;
 namespace NewsAggregator.Application.Features.Sources.Commands.Create;
 
 internal sealed class CreateSourceCommandHandler(
-    INewsAggregatorDbContext context)
+    INewsAggregatorDbContext _context)
     : IRequestHandler<
         CreateSourceCommand,
         Result<CreateSourceResponse>>
@@ -16,7 +16,7 @@ internal sealed class CreateSourceCommandHandler(
     public async ValueTask<Result<CreateSourceResponse>> Handle(CreateSourceCommand command, CancellationToken cancellationToken)
     {
         var exists =
-            await context.Sources
+            await _context.Sources
                 .AnyAsync(
                     x => x.Name == command.Name,
                     cancellationToken);
@@ -34,9 +34,9 @@ internal sealed class CreateSourceCommandHandler(
                 command.Name,
                 command.BaseUrl);
 
-        context.Sources.Add(source);
+        _context.Sources.Add(source);
 
-        await context.SaveChangesAsync(
+        await _context.SaveChangesAsync(
             cancellationToken);
 
         return Result<CreateSourceResponse>

@@ -4,13 +4,11 @@ using NewsAggregator.Domain.Events;
 
 namespace NewsAggregator.Application.Features.Articles.Events;
 
-public sealed class ArticleImportedEventHandler(
+internal sealed class ArticleImportedEventHandler(
     ILogger<ArticleImportedEventHandler> logger)
     : IDomainEventHandler<ArticleImportedEvent>
 {
-    public Task Handle(
-        ArticleImportedEvent notification,
-        CancellationToken cancellationToken)
+    public Task Handle(ArticleImportedEvent notification, CancellationToken cancellationToken)
     {
         logger.LogInformation(
             "Article imported: {Title}",
