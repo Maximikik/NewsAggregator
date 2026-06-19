@@ -21,9 +21,10 @@ public static class DependencyInjection
 
         services.AddTransient(typeof(IPipelineBehavior<,>),
            typeof(ValidationBehavior<,>));
-
         services.AddSingleton(
             typeof(IPipelineBehavior<,>), typeof(ErrorLoggingBehaviour<,>));
+        services.AddTransient(
+            typeof(IPipelineBehavior<,>), typeof(CacheBehavior<,>));
 
         services.Scan(scan => scan
            .FromAssemblyOf<INewsAggregatorDbContext>()

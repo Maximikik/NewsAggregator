@@ -5,9 +5,9 @@ using System.Text;
 
 namespace NewsAggregator.WebAPI.Common.Helpers;
 
-public static class JwtHelper
+internal static class JwtHelper
 {
-    public static IServiceCollection AddJwt(
+    internal static IServiceCollection AddJwt(
         this IServiceCollection services,
         IConfiguration configuration)
     {

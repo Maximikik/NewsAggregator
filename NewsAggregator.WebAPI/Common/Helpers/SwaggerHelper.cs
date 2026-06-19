@@ -4,13 +4,11 @@ using Microsoft.OpenApi;
 
 namespace NewsAggregator.WebAPI.Common.Helpers;
 
-public static class SwaggerHelper
+internal static class SwaggerHelper
 {
-    public static IServiceCollection AddConfiguredSwagger(
+    internal static IServiceCollection AddConfiguredSwagger(
         this IServiceCollection services)
     {
-        services.AddEndpointsApiExplorer();
-
         services.AddSwaggerGen(options =>
         {
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

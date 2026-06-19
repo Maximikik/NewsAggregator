@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NewsAggregator.Application.Common.Authentication;
+using NewsAggregator.Application.Common.Caching;
 using NewsAggregator.Application.Common.Interfaces;
 using NewsAggregator.Infrastructure.Authentication;
+using NewsAggregator.Infrastructure.Caching;
 using NewsAggregator.Infrastructure.Persistence;
 using NewsAggregator.Infrastructure.Rss;
 using NewsAggregator.Infrastructure.Services;
@@ -48,6 +50,9 @@ public static class DependencyInjection
 
         services.AddScoped<IUserContext,
             UserContext>();
+
+        services.AddSingleton<ICacheService,
+            MemoryCacheService>();
 
         var connectionString = configuration
             .GetConnectionString(

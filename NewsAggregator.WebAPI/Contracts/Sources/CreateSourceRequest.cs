@@ -1,5 +1,5 @@
 ﻿namespace NewsAggregator.WebAPI.Contracts.Sources;
 
-public sealed record CreateSourceRequest(
+internal sealed record CreateSourceRequest(
     string Name,
     string BaseUrl);

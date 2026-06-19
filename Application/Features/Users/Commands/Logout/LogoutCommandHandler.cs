@@ -7,7 +7,7 @@ namespace NewsAggregator.Application.Features.Users.Commands.Logout;
 
 internal sealed class LogoutCommandHandler(
     INewsAggregatorDbContext _context)
-    : IRequestHandler<LogoutCommand, Result>
+    : ICommandHandler<LogoutCommand, Result>
 {
     public async ValueTask<Result> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {

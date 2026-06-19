@@ -2,9 +2,9 @@
 
 namespace NewsAggregator.WebAPI.Extensions;
 
-public static class ResultExtensions
+internal static class ResultExtensions
 {
-    public static IResult ToHttpResult<T>(
+    internal static IResult ToHttpResult<T>(
         this Result<T> result)
     {
         if (result.IsSuccess)
@@ -28,7 +28,7 @@ public static class ResultExtensions
         };
     }
 
-    public static IResult ToHttpResult(
+    internal static IResult ToHttpResult(
         this Result result)
     {
         if (result.IsSuccess)

@@ -1,5 +1,5 @@
 ﻿namespace NewsAggregator.WebAPI.Contracts.Users;
 
-public sealed record RegisterUserRequest(
+internal sealed record RegisterUserRequest(
     string Email,
     string Password);

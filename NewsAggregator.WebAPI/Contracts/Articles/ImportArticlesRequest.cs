@@ -1,4 +1,4 @@
 ﻿namespace NewsAggregator.WebAPI.Contracts.Articles;
 
-public sealed record ImportArticlesRequest(
+internal sealed record ImportArticlesRequest(
     Guid SourceId);

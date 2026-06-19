@@ -4,7 +4,7 @@ using NewsAggregator.Domain.Common;
 
 namespace NewsAggregator.Infrastructure.Persistence;
 
-public sealed class DomainEventDispatcher(
+internal sealed class DomainEventDispatcher(
     IServiceProvider serviceProvider)
     : IDomainEventDispatcher
 {

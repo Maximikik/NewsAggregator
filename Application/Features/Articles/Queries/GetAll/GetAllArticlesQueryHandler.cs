@@ -8,7 +8,7 @@ namespace NewsAggregator.Application.Features.Articles.Queries.GetAll;
 
 internal sealed class GetAllArticlesQueryHandler(
     INewsAggregatorDbContext _context)
-    : IRequestHandler<
+    : IQueryHandler<
         GetAllArticlesQuery, Result<ArticlesResponse>>
 {
     public async ValueTask<Result<ArticlesResponse>> Handle(GetAllArticlesQuery request, CancellationToken cancellationToken)

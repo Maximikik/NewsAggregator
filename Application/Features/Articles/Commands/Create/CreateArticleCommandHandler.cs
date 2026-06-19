@@ -1,5 +1,6 @@
 ﻿using Mediator;
 using Microsoft.EntityFrameworkCore;
+using NewsAggregator.Application.Common.Caching;
 using NewsAggregator.Application.Common.Interfaces;
 using NewsAggregator.Application.Common.Results;
 using NewsAggregator.Domain.Entities;
@@ -7,8 +8,9 @@ using NewsAggregator.Domain.Entities;
 namespace NewsAggregator.Application.Features.Articles.Commands.Create;
 
 internal sealed class CreateArticleHandler(
-    INewsAggregatorDbContext _context)
-    : IRequestHandler<
+    INewsAggregatorDbContext _context,
+    ICacheService _cache)
+    : ICommandHandler<
         CreateArticleCommand, Result<CreateArticleResponse>>
 {
     public async ValueTask<Result<CreateArticleResponse>> Handle(CreateArticleCommand command, CancellationToken cancellationToken)
@@ -38,6 +40,8 @@ internal sealed class CreateArticleHandler(
 
         await _context.SaveChangesAsync(
             cancellationToken);
+
+        _cache.RemoveByPrefix(CacheKeys.Articles);
 
         return Result<CreateArticleResponse>
             .Success(

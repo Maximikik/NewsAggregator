@@ -1,4 +1,4 @@
 ﻿namespace NewsAggregator.WebAPI.Contracts.Categories;
 
-public sealed record CreateCategoryRequest(
+internal sealed record CreateCategoryRequest(
     string Name);

@@ -1,5 +1,6 @@
 ﻿using Mediator;
 using Microsoft.EntityFrameworkCore;
+using NewsAggregator.Application.Common.Caching;
 using NewsAggregator.Application.Common.Interfaces;
 using NewsAggregator.Application.Common.Results;
 using NewsAggregator.Application.Features.Sources.Create;
@@ -8,10 +9,10 @@ using NewsAggregator.Domain.Entities;
 namespace NewsAggregator.Application.Features.Sources.Commands.Create;
 
 internal sealed class CreateSourceCommandHandler(
-    INewsAggregatorDbContext _context)
+    INewsAggregatorDbContext _context,
+    ICacheService _cache)
     : IRequestHandler<
-        CreateSourceCommand,
-        Result<CreateSourceResponse>>
+        CreateSourceCommand, Result<CreateSourceResponse>>
 {
     public async ValueTask<Result<CreateSourceResponse>> Handle(CreateSourceCommand command, CancellationToken cancellationToken)
     {
@@ -38,6 +39,8 @@ internal sealed class CreateSourceCommandHandler(
 
         await _context.SaveChangesAsync(
             cancellationToken);
+
+        _cache.Remove("sources");
 
         return Result<CreateSourceResponse>
             .Success(

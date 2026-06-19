@@ -2,9 +2,9 @@
 
 namespace NewsAggregator.WebAPI.Extensions;
 
-public static class EndpointExtensions
+internal static class EndpointExtensions
 {
-    public static IEndpointRouteBuilder MapEndpoints(
+    internal static IEndpointRouteBuilder MapEndpoints(
         this IEndpointRouteBuilder endpointRouteBuilder)
     {
         endpointRouteBuilder.MapArticleEndpoints();

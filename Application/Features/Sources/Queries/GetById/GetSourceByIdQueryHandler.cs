@@ -8,7 +8,7 @@ namespace NewsAggregator.Application.Features.Sources.Queries.GetById;
 
 internal sealed class GetSourceByIdHandler(
     INewsAggregatorDbContext _context)
-    : IRequestHandler<
+    : IQueryHandler<
         GetSourceByIdQuery, Result<SourceResponse>>
 {
     public async ValueTask<Result<SourceResponse>> Handle(GetSourceByIdQuery query, CancellationToken cancellationToken)

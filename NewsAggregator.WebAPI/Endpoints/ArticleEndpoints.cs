@@ -9,9 +9,9 @@ using NewsAggregator.WebAPI.Extensions;
 
 namespace NewsAggregator.WebAPI.Endpoints;
 
-public static class ArticleEndpoints
+internal static class ArticleEndpoints
 {
-    public static IEndpointRouteBuilder
+    internal static IEndpointRouteBuilder
         MapArticleEndpoints(
         this IEndpointRouteBuilder app)
     {

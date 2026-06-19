@@ -1,5 +1,6 @@
 ﻿using Mediator;
 using Microsoft.EntityFrameworkCore;
+using NewsAggregator.Application.Common.Caching;
 using NewsAggregator.Application.Common.Interfaces;
 using NewsAggregator.Application.Common.Results;
 using NewsAggregator.Application.Features.Articles.Commands.Import;
@@ -9,7 +10,8 @@ namespace NewsAggregator.Application.Features.Articles.Import;
 
 internal sealed class ImportArticlesCommandHandler(
     INewsAggregatorDbContext _context,
-    IRssParser _rssParser)
+    IRssParser _rssParser,
+    ICacheService _cache)
     : ICommandHandler<
         ImportArticlesCommand, Result>
 {
@@ -93,6 +95,8 @@ internal sealed class ImportArticlesCommandHandler(
 
         await _context.SaveChangesAsync(
             cancellationToken);
+
+        _cache.RemoveByPrefix(CacheKeys.Articles);
 
         return Result.Success();
     }

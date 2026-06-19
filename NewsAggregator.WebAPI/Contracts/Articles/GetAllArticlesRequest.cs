@@ -1,5 +1,5 @@
 ﻿namespace NewsAggregator.WebAPI.Contracts.Articles;
 
-public sealed record GetAllArticlesRequest(
+internal sealed record GetAllArticlesRequest(
     int PageNumber,
     int PageSize);

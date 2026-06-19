@@ -8,7 +8,7 @@ namespace NewsAggregator.Application.Features.Categories.Commands.Create;
 
 internal sealed class CreateCategoryHandler(
     INewsAggregatorDbContext _context)
-    : IRequestHandler<
+    : ICommandHandler<
         CreateCategoryCommand, Result<CreateCategoryResponse>>
 {
     public async ValueTask<Result<CreateCategoryResponse>> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)

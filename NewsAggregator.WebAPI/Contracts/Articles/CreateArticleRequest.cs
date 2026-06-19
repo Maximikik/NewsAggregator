@@ -1,6 +1,6 @@
 ﻿namespace NewsAggregator.WebAPI.Contracts.Articles;
 
-public sealed record CreateArticleRequest(
+internal sealed record CreateArticleRequest(
     string Title,
     string Description,
     Guid SourceId);

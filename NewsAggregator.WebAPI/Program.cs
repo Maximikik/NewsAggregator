@@ -14,13 +14,13 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration);
 });
 
-builder.Services.AddOpenApi();
+builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddJwt(builder.Configuration);
 builder.Services.AddConfiguredCors(builder.Configuration);
@@ -32,26 +32,27 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseHangfireDashboard();
 
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<NewsAggregatorDbContext>();
     db.Database.Migrate();
 }
 
-app.UseHangfireDashboard();
 
 app.UseCors("Default");
 
 app.UseHttpsRedirection();
 
-app.MapEndpoints();
-
-app.Services.RegisterRecurringJobs();
+app.UseExceptionHandler();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapEndpoints();
+
+app.Services.RegisterRecurringJobs();
 
 app.Run();

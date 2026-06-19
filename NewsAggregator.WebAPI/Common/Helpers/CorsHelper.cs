@@ -2,9 +2,9 @@
 
 namespace NewsAggregator.WebAPI.Common.Helpers;
 
-public static class CorsHelper
+internal static class CorsHelper
 {
-    public static IServiceCollection AddConfiguredCors(
+    internal static IServiceCollection AddConfiguredCors(
         this IServiceCollection services,
         IConfiguration configuration)
     {

@@ -6,7 +6,7 @@ using NewsAggregator.Application.Features.Articles.Queries.GetArticleById;
 
 namespace NewsAggregator.Application.Features.Users.Queries.GetFeed;
 
-public sealed class GetFeedQueryHandler(
+internal sealed class GetFeedQueryHandler(
     INewsAggregatorDbContext _context)
     : IQueryHandler<
         GetFeedQuery, Result<List<ArticleResponse>>>

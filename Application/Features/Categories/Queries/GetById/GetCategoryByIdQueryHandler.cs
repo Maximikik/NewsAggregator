@@ -8,7 +8,7 @@ namespace NewsAggregator.Application.Features.Categories.Queries.GetById;
 
 internal class GetCategoryByIdQueryHandler(
     INewsAggregatorDbContext _context)
-    : IRequestHandler<GetCategoryByIdQuery, Result<CategoryResponse>>
+    : IQueryHandler<GetCategoryByIdQuery, Result<CategoryResponse>>
 {
     public async ValueTask<Result<CategoryResponse>> Handle(GetCategoryByIdQuery query, CancellationToken cancellationToken)
     {

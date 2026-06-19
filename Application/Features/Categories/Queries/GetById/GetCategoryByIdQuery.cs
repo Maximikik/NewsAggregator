@@ -5,4 +5,4 @@ namespace NewsAggregator.Application.Features.Categories.Queries.GetById;
 
 public sealed record GetCategoryByIdQuery(
     Guid Id)
-    : IRequest<Result<CategoryResponse>>;
+    : IQuery<Result<CategoryResponse>>;

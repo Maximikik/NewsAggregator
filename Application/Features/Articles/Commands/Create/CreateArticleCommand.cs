@@ -7,4 +7,4 @@ public sealed record CreateArticleCommand(
     string Title,
     string Description,
     Guid SourceId)
-    : IRequest<Result<CreateArticleResponse>>;
+    : ICommand<Result<CreateArticleResponse>>;

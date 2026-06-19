@@ -15,6 +15,8 @@ internal sealed class GetAllSourcesQueryHandler(
         var sources = await _context.Sources.ToListAsync(cancellationToken);
 
         return Result<SourcesReponse>
-            .Success(new SourcesReponse(sources.Select(SourceMapper.ToResponse)));
+            .Success(new SourcesReponse(
+                sources.Select(SourceMapper.ToResponse))
+            );
     }
 }
