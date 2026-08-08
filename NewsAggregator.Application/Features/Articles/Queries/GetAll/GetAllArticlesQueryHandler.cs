@@ -15,6 +15,7 @@ internal sealed class GetAllArticlesQueryHandler(
     {
         var articles = await _context.Articles
             .Include(x => x.Source)
+            .OrderByDescending(x => x.CreatedAt)
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToListAsync(cancellationToken);
