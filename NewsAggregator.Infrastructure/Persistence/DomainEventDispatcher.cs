@@ -5,7 +5,8 @@ using NewsAggregator.Domain.Common;
 namespace NewsAggregator.Infrastructure.Persistence;
 
 internal sealed class DomainEventDispatcher(
-    IServiceProvider serviceProvider)
+    IServiceProvider serviceProvider,
+    IEventBus eventBus)
     : IDomainEventDispatcher
 {
     public async Task DispatchAsync(
@@ -28,5 +29,7 @@ internal sealed class DomainEventDispatcher(
                 handler,
                 [domainEvent, cancellationToken])!;
         }
+
+        await eventBus.PublishAsync(domainEvent, cancellationToken);
     }
 }

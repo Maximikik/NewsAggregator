@@ -1,13 +1,17 @@
 ﻿using Hangfire;
 using Hangfire.PostgreSql;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NewsAggregator.Application.Common.Authentication;
 using NewsAggregator.Application.Common.Caching;
 using NewsAggregator.Application.Common.Interfaces;
 using NewsAggregator.Infrastructure.Authentication;
 using NewsAggregator.Infrastructure.Caching;
+using NewsAggregator.Infrastructure.Messaging;
+using NewsAggregator.Infrastructure.Messaging.Consumers;
 using NewsAggregator.Infrastructure.Persistence;
 using NewsAggregator.Infrastructure.Rss;
 using NewsAggregator.Infrastructure.Services;
@@ -65,6 +69,34 @@ public static class DependencyInjection
                     options =>
                         options.UseNpgsqlConnection(
                             connectionString)));
+
+        services.Configure<RabbitMqOptions>(
+            configuration.GetSection(RabbitMqOptions.SectionName));
+
+        services.AddScoped<IEventBus, MassTransitEventBus>();
+
+        services.AddMassTransit(x =>
+        {
+            x.AddConsumer<ArticleImportedIntegrationConsumer>();
+
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                var rabbitMqOptions = context
+                    .GetRequiredService<IOptions<RabbitMqOptions>>()
+                    .Value;
+
+                cfg.Host(
+                    rabbitMqOptions.Host,
+                    rabbitMqOptions.VirtualHost,
+                    h =>
+                    {
+                        h.Username(rabbitMqOptions.Username);
+                        h.Password(rabbitMqOptions.Password);
+                    });
+
+                cfg.ConfigureEndpoints(context);
+            });
+        });
 
         return services;
     }
