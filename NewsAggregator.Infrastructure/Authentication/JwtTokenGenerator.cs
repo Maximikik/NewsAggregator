@@ -19,7 +19,7 @@ internal sealed class JwtTokenGenerator
         _options = options.Value;
     }
 
-    public string Generate(User user)
+    public GeneratedToken Generate(User user)
     {
         var claims =
             new[]
@@ -52,7 +52,7 @@ internal sealed class JwtTokenGenerator
                     _options.ExpirationMinutes),
                 signingCredentials: credentials);
 
-        return new JwtSecurityTokenHandler()
-            .WriteToken(token);
+        return new GeneratedToken(new JwtSecurityTokenHandler()
+            .WriteToken(token), _options.ExpirationMinutes * 60);
     }
 }

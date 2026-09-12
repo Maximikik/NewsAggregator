@@ -7,7 +7,7 @@ internal class RegisterUserCommandValidator
 {
     public RegisterUserCommandValidator()
     {
-        RuleFor(x => x.Email).Length(10, 230);
-        RuleFor(x => x.Password).Length(10, 230);
+        RuleFor(x => x.Email).NotEmpty().EmailAddress().MaximumLength(230);
+        RuleFor(x => x.Password).NotEmpty().Length(10, 230);
     }
 }

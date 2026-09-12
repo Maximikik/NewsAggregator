@@ -11,4 +11,6 @@ public sealed class JwtOptions
     public string SecretKey { get; init; } = null!;
 
     public int ExpirationMinutes { get; init; }
+
+    public int RefreshTokenExpirationDays { get; init; } = 30;
 }

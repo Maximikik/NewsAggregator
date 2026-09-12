@@ -4,5 +4,5 @@ namespace NewsAggregator.Application.Common.Authentication;
 
 public interface IJwtTokenGenerator
 {
-    string Generate(User user);
+    GeneratedToken Generate(User user);
 }
