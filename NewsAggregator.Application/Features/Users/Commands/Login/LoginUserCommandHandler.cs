@@ -39,17 +39,17 @@ internal sealed class LoginUserCommandHandler(
                 UserErrors.InvalidCredentials);
         }
 
-        var accessToken =
+        var token =
             _jwtTokenGenerator.Generate(user);
 
-        var refreshTokenValue =
+        var generatedRefreshToken =
             _refreshTokenGenerator.Generate();
 
         var refreshToken =
             new RefreshToken(
                 user.Id,
-                refreshTokenValue,
-                DateTime.UtcNow.AddHours(1));
+                generatedRefreshToken.Value,
+                generatedRefreshToken.ExpiresAtUtc);
 
         _context.RefreshTokens.Add(
             refreshToken);
@@ -60,9 +60,9 @@ internal sealed class LoginUserCommandHandler(
         return Result<LoginResponse>
             .Success(
                 new LoginResponse(
-                    accessToken,
-                    900,
-                    refreshTokenValue)
+                    token.AccessToken,
+                    token.ExpiresInSeconds,
+                    generatedRefreshToken.Value)
                 );
     }
 }

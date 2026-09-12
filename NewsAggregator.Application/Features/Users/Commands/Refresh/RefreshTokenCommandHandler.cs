@@ -17,45 +17,44 @@ public sealed class RefreshTokenCommandHandler(
 {
     public async ValueTask<Result<LoginResponse>> Handle(RefreshTokenCommand command, CancellationToken cancellationToken)
     {
-        var token =
+        var refreshToken =
             await _context.RefreshTokens
                 .Include(x => x.User)
                     .SingleOrDefaultAsync(
                         x => x.Token == command.RefreshToken,
                     cancellationToken);
 
-        if (token is null)
+        if (refreshToken is null)
         {
             return Result<LoginResponse>
                 .Failure(
                     UserErrors.InvalidCredentials);
         }
 
-        if (!token.IsActive)
+        if (!refreshToken.IsActive)
         {
             return Result<LoginResponse>
                 .Failure(
                     UserErrors.InvalidCredentials);
         }
 
-        token.Revoke();
+        refreshToken.Revoke();
 
-        var newRefreshValue =
+        var generatedRefreshToken =
             _refreshTokenGenerator
                 .Generate();
 
         var newRefresh =
             new RefreshToken(
-                token.UserId,
-                newRefreshValue,
-                DateTime.UtcNow
-                    .AddDays(30));
+                refreshToken.UserId,
+                generatedRefreshToken.Value,
+                generatedRefreshToken.ExpiresAtUtc);
 
         _context.RefreshTokens
             .Add(newRefresh);
 
-        var accessToken =
-            _jwtTokenGenerator.Generate(token.User);
+        var generatedAccessToken =
+            _jwtTokenGenerator.Generate(refreshToken.User);
 
         await _context
             .SaveChangesAsync(cancellationToken);
@@ -63,8 +62,8 @@ public sealed class RefreshTokenCommandHandler(
         return Result<LoginResponse>
             .Success(
                 new LoginResponse(
-                    accessToken,
-                    900,
-                    newRefreshValue));
+                    generatedAccessToken.AccessToken,
+                    generatedAccessToken.ExpiresInSeconds,
+                    generatedRefreshToken.Value));
     }
 }

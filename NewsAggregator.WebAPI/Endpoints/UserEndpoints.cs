@@ -69,26 +69,26 @@ internal static class UserEndpoints
     }
 
     private static async Task<IResult> Refresh(
-       string refreshToken,
+       RefreshRequest request,
        IMediator mediator,
        CancellationToken cancellationToken)
     {
         var result =
             await mediator.Send(
-                new RefreshTokenCommand(refreshToken),
+                new RefreshTokenCommand(request.RefreshToken),
                 cancellationToken);
 
         return result.ToHttpResult();
     }
 
     private static async Task<IResult> Logout(
-       string refreshToken,
+       LogoutRequest request,
        IMediator mediator,
        CancellationToken cancellationToken)
     {
         var result =
             await mediator.Send(
-                new LogoutCommand(refreshToken),
+                new LogoutCommand(request.RefreshToken),
                 cancellationToken);
 
         return result.ToHttpResult();
