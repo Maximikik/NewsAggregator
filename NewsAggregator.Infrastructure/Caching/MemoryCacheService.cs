@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using NewsAggregator.Application.Common.Caching;
+using System.Collections.Concurrent;
 
 namespace NewsAggregator.Infrastructure.Caching;
 
@@ -7,12 +8,9 @@ public class MemoryCacheService(
     IMemoryCache _cache)
     : ICacheService
 {
-    private readonly HashSet<string> _keys = [];
+    private readonly ConcurrentDictionary<string, byte> _keys = [];
 
-    public T? Get<T>(string key)
-    {
-        return _cache.Get<T>(key);
-    }
+    public T? Get<T>(string key) => _cache.Get<T>(key);
 
     public void Set<T>(
         string key,
@@ -24,31 +22,26 @@ public class MemoryCacheService(
             value,
             expiration);
 
-        _keys.Add(key);
+        _keys.TryAdd(key, 0);
     }
 
     public void Remove(string key)
     {
         _cache.Remove(key);
 
-        _keys.Remove(key);
+        _keys.TryRemove(key, out _);
     }
 
     public void RemoveByPrefix(string prefix)
     {
-        var keys =
-            _keys
-                .Where(
-                    x => x.StartsWith(
-                        prefix,
-                        StringComparison.OrdinalIgnoreCase))
-                .ToList();
+        var keys = _keys.Keys
+            .Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            .ToList();
 
         foreach (var key in keys)
         {
             _cache.Remove(key);
-
-            _keys.Remove(key);
+            _keys.TryRemove(key, out _);
         }
     }
 }

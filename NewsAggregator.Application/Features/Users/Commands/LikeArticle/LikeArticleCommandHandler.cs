@@ -1,5 +1,6 @@
 ﻿using Mediator;
 using Microsoft.EntityFrameworkCore;
+using NewsAggregator.Application.Common.Caching;
 using NewsAggregator.Application.Common.Interfaces;
 using NewsAggregator.Application.Common.Results;
 using NewsAggregator.Domain.Entities;
@@ -7,7 +8,8 @@ using NewsAggregator.Domain.Entities;
 namespace NewsAggregator.Application.Features.Users.Commands.LikeArticle;
 
 internal sealed class LikeArticleCommandHandler(
-    INewsAggregatorDbContext _context)
+    INewsAggregatorDbContext _context,
+    ICacheService _cache)
     : ICommandHandler<
         LikeArticleCommand, Result>
 {
@@ -83,6 +85,8 @@ internal sealed class LikeArticleCommandHandler(
 
         await _context.SaveChangesAsync(
             cancellationToken);
+
+        _cache.Remove($"{CacheKeys.Articles}:{command.UserId}");
 
         return Result.Success();
     }

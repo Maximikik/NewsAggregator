@@ -24,6 +24,8 @@ public sealed class ArticleConfiguration
             .IsRequired()
             .HasMaxLength(2000);
 
+        builder.HasIndex(x => x.Url).IsUnique();
+
         builder.Property(x => x.PublishedAt)
             .IsRequired();
 
