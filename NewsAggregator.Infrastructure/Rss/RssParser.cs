@@ -1,11 +1,13 @@
 ﻿using NewsAggregator.Application.Common.Interfaces;
 using NewsAggregator.Application.Common.Models;
+using System.Net;
 using System.ServiceModel.Syndication;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace NewsAggregator.Infrastructure.Rss;
 
-public sealed class RssParser(
+public sealed partial class RssParser(
     HttpClient httpClient)
     : IRssParser
 {
@@ -37,8 +39,8 @@ public sealed class RssParser(
                                 .ToList();
 
                         return new RssArticleModel(
-                            item.Title.Text,
-                            item.Summary?.Text ?? "",
+                            StripHtml(item.Title.Text),
+                            StripHtml(item.Summary?.Text ?? ""),
                             item.Links
                                 .FirstOrDefault()?
                                 .Uri
@@ -48,4 +50,24 @@ public sealed class RssParser(
                     })
                 .ToList();
     }
+
+    private static string StripHtml(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return value;
+        }
+
+        var withoutTags = HtmlTagRegex().Replace(value, " ");
+
+        var decoded = WebUtility.HtmlDecode(withoutTags);
+
+        return WhitespaceRegex().Replace(decoded, " ").Trim();
+    }
+
+    [GeneratedRegex("<[^>]*>")]
+    private static partial Regex HtmlTagRegex();
+
+    [GeneratedRegex(@"\s+")]
+    private static partial Regex WhitespaceRegex();
 }

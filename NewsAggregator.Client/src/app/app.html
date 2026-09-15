@@ -1,21 +1,57 @@
 <div class="min-h-screen bg-slate-50">
-  @if (authService.isAuthenticated()) {
-    <nav class="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3">
-      <a routerLink="/feed" class="text-lg font-semibold text-slate-900">NewsAggregator</a>
-      <div class="flex items-center gap-4">
-        @if (authService.userEmail()) {
-          <span class="text-sm text-slate-500">{{ authService.userEmail() }}</span>
-        }
-        <button
-          type="button"
-          (click)="logout()"
-          class="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+  <nav class="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <a routerLink="/" class="flex items-center gap-2 text-lg font-extrabold text-slate-900">
+        <span class="text-indigo-600">◆</span> NewsAggregator
+      </a>
+
+      <div class="flex items-center gap-2">
+        <a
+          routerLink="/"
+          routerLinkActive="text-indigo-600"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="rounded-full px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600"
         >
-          Log out
-        </button>
+          Home
+        </a>
+
+        @if (authService.isAuthenticated()) {
+          <a
+            routerLink="/feed"
+            routerLinkActive="text-indigo-600"
+            class="rounded-full px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600"
+          >
+            Your feed
+          </a>
+
+          @if (authService.userEmail()) {
+            <span class="ml-2 hidden text-sm text-slate-400 sm:inline">{{ authService.userEmail() }}</span>
+          }
+
+          <button
+            type="button"
+            (click)="logout()"
+            class="ml-2 rounded-full border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+          >
+            Log out
+          </button>
+        } @else {
+          <a
+            routerLink="/login"
+            class="rounded-full px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600"
+          >
+            Sign in
+          </a>
+          <a
+            routerLink="/register"
+            class="rounded-full bg-slate-900 px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+          >
+            Get started
+          </a>
+        }
       </div>
-    </nav>
-  }
+    </div>
+  </nav>
 
   <router-outlet />
 </div>

@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ArticleService } from '../../core/services/article.service';
 import { Article } from '../../core/models/article.models';
-import { ArticleCard } from './article-card/article-card';
+import { ArticleCard } from '../../shared/article-card/article-card';
 
 @Component({
   selector: 'app-feed',
