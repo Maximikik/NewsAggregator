@@ -105,6 +105,6 @@ internal static class UserEndpoints
                     userContext.UserId),
                 cancellationToken);
 
-        return Results.Ok(result);
+        return result.ToHttpResult();
     }
 }
