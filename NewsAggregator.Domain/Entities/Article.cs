@@ -23,7 +23,8 @@ public sealed class Article
         string description,
         string url,
         DateTime publishedAt,
-        Guid sourceId)
+        Guid sourceId,
+        string? imageUrl = null)
     {
         Id = Guid.NewGuid();
 
@@ -36,6 +37,8 @@ public sealed class Article
         PublishedAt = publishedAt;
 
         SourceId = sourceId;
+
+        ImageUrl = imageUrl;
 
         _domainEvents.Add(
             new ArticleCreatedEvent(
@@ -51,6 +54,8 @@ public sealed class Article
     public string Description { get; private set; } = null!;
 
     public string Url { get; private set; } = null!;
+
+    public string? ImageUrl { get; private set; }
 
     public DateTime PublishedAt { get; private set; }
 

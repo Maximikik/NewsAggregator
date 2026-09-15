@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ArticleService } from '../../core/services/article.service';
@@ -18,7 +18,11 @@ export class Home implements OnInit {
   readonly isLoading = signal(true);
   readonly errorMessage = signal<string | null>(null);
   readonly pageNumber = signal(1);
-  readonly hasNextPage = signal(true);
+  readonly totalCount = signal(0);
+
+  readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalCount() / PAGE_SIZE)));
+  readonly hasNextPage = computed(() => this.pageNumber() < this.totalPages());
+  readonly hasPreviousPage = computed(() => this.pageNumber() > 1);
 
   constructor(
     protected readonly authService: AuthService,
@@ -37,7 +41,7 @@ export class Home implements OnInit {
       next: (result) => {
         this.articles.set(result.articles);
         this.pageNumber.set(page);
-        this.hasNextPage.set(result.articles.length === PAGE_SIZE);
+        this.totalCount.set(result.totalCount);
         this.isLoading.set(false);
       },
       error: () => {
@@ -54,8 +58,20 @@ export class Home implements OnInit {
   }
 
   previousPage(): void {
-    if (this.pageNumber() > 1) {
+    if (this.hasPreviousPage()) {
       this.loadPage(this.pageNumber() - 1);
+    }
+  }
+
+  firstPage(): void {
+    if (this.hasPreviousPage()) {
+      this.loadPage(1);
+    }
+  }
+
+  lastPage(): void {
+    if (this.hasNextPage()) {
+      this.loadPage(this.totalPages());
     }
   }
 

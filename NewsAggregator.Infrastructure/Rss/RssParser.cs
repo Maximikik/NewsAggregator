@@ -1,4 +1,4 @@
-﻿using NewsAggregator.Application.Common.Interfaces;
+using NewsAggregator.Application.Common.Interfaces;
 using NewsAggregator.Application.Common.Models;
 using System.Net;
 using System.ServiceModel.Syndication;
@@ -38,15 +38,18 @@ public sealed partial class RssParser(
                                 .Distinct()
                                 .ToList();
 
+                        var rawSummary = item.Summary?.Text ?? "";
+
                         return new RssArticleModel(
                             StripHtml(item.Title.Text),
-                            StripHtml(item.Summary?.Text ?? ""),
+                            StripHtml(rawSummary),
                             item.Links
                                 .FirstOrDefault()?
                                 .Uri
                                 .ToString() ?? "",
                             item.PublishDate.UtcDateTime,
-                            categories);
+                            categories,
+                            ExtractImageUrl(rawSummary, item.Links));
                     })
                 .ToList();
     }
@@ -65,9 +68,35 @@ public sealed partial class RssParser(
         return WhitespaceRegex().Replace(decoded, " ").Trim();
     }
 
+    private static string? ExtractImageUrl(
+        string html,
+        IEnumerable<SyndicationLink> links)
+    {
+        if (!string.IsNullOrWhiteSpace(html))
+        {
+            var match = ImgSrcRegex().Match(html);
+
+            if (match.Success)
+            {
+                return WebUtility.HtmlDecode(match.Groups[1].Value);
+            }
+        }
+
+        return links
+            .FirstOrDefault(
+                l =>
+                    l.RelationshipType == "enclosure" &&
+                    l.MediaType?.StartsWith("image/", StringComparison.OrdinalIgnoreCase) == true)?
+            .Uri
+            .ToString();
+    }
+
     [GeneratedRegex("<[^>]*>")]
     private static partial Regex HtmlTagRegex();
 
     [GeneratedRegex(@"\s+")]
     private static partial Regex WhitespaceRegex();
+
+    [GeneratedRegex("<img[^>]*\\ssrc=[\"']([^\"']+)[\"']", RegexOptions.IgnoreCase)]
+    private static partial Regex ImgSrcRegex();
 }

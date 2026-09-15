@@ -66,24 +66,50 @@
         }
       </div>
 
-      <div class="mt-10 flex items-center justify-center gap-4">
-        <button
-          type="button"
-          (click)="previousPage()"
-          [disabled]="pageNumber() === 1"
-          class="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent"
-        >
-          &larr; Previous
-        </button>
-        <span class="text-sm text-slate-500">Page {{ pageNumber() }}</span>
-        <button
-          type="button"
-          (click)="nextPage()"
-          [disabled]="!hasNextPage()"
-          class="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent"
-        >
-          Next &rarr;
-        </button>
+      <div class="mt-10 flex flex-col items-center gap-3">
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            (click)="firstPage()"
+            [disabled]="!hasPreviousPage()"
+            class="rounded-full border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent"
+            aria-label="First page"
+          >
+            &laquo;
+          </button>
+          <button
+            type="button"
+            (click)="previousPage()"
+            [disabled]="!hasPreviousPage()"
+            class="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent"
+          >
+            &larr; Previous
+          </button>
+
+          <span class="mx-2 whitespace-nowrap text-sm font-medium text-slate-700">
+            Page {{ pageNumber() }} of {{ totalPages() }}
+          </span>
+
+          <button
+            type="button"
+            (click)="nextPage()"
+            [disabled]="!hasNextPage()"
+            class="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent"
+          >
+            Next &rarr;
+          </button>
+          <button
+            type="button"
+            (click)="lastPage()"
+            [disabled]="!hasNextPage()"
+            class="rounded-full border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent"
+            aria-label="Last page"
+          >
+            &raquo;
+          </button>
+        </div>
+
+        <p class="text-xs text-slate-400">{{ totalCount() }} articles total</p>
       </div>
     }
   </section>

@@ -5,4 +5,5 @@ public sealed record RssArticleModel(
     string Description,
     string Url,
     DateTime PublishedAt,
-    IReadOnlyList<string> Categories);
+    IReadOnlyList<string> Categories,
+    string? ImageUrl = null);

@@ -14,6 +14,7 @@ export class ArticleDetail implements OnInit {
   readonly isLoading = signal(true);
   readonly errorMessage = signal<string | null>(null);
   readonly isLiked = signal(false);
+  readonly imageFailed = signal(false);
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -27,6 +28,7 @@ export class ArticleDetail implements OnInit {
           this.isLoading.set(true);
           this.errorMessage.set(null);
           this.isLiked.set(false);
+          this.imageFailed.set(false);
           return this.articleService.getById(params.get('id')!);
         }),
       )
@@ -51,5 +53,9 @@ export class ArticleDetail implements OnInit {
     this.articleService.likeArticle(current.id).subscribe({
       next: () => this.isLiked.set(true),
     });
+  }
+
+  onImageError(): void {
+    this.imageFailed.set(true);
   }
 }

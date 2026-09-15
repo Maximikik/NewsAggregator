@@ -10,36 +10,42 @@
       <p class="text-sm text-slate-500">{{ errorMessage() }}</p>
     </div>
   } @else if (article(); as current) {
-    <article class="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-      <span
-        class="mb-4 inline-block rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-indigo-600"
-      >
-        {{ current.source }}
-      </span>
+    <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      @if (current.imageUrl && !imageFailed()) {
+        <img [src]="current.imageUrl" (error)="onImageError()" alt="" class="h-72 w-full object-cover" />
+      }
 
-      <h1 class="mb-4 text-3xl font-extrabold leading-tight text-slate-900">
-        {{ current.title }}
-      </h1>
-
-      <p class="whitespace-pre-line text-base leading-relaxed text-slate-700">
-        {{ current.description }}
-      </p>
-
-      <div class="mt-8 border-t border-slate-100 pt-6">
-        <button
-          type="button"
-          (click)="onLike()"
-          [disabled]="isLiked()"
-          class="rounded-full border px-4 py-2 text-sm font-medium transition-colors disabled:cursor-default"
-          [class.border-slate-300]="!isLiked()"
-          [class.text-slate-600]="!isLiked()"
-          [class.hover:bg-slate-50]="!isLiked()"
-          [class.border-rose-200]="isLiked()"
-          [class.bg-rose-50]="isLiked()"
-          [class.text-rose-600]="isLiked()"
+      <div class="p-8">
+        <span
+          class="mb-4 inline-block rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-indigo-600"
         >
-          {{ isLiked() ? '♥ Liked' : '♡ Like this article' }}
-        </button>
+          {{ current.source }}
+        </span>
+
+        <h1 class="mb-4 text-3xl font-extrabold leading-tight text-slate-900">
+          {{ current.title }}
+        </h1>
+
+        <p class="whitespace-pre-line text-base leading-relaxed text-slate-700">
+          {{ current.description }}
+        </p>
+
+        <div class="mt-8 border-t border-slate-100 pt-6">
+          <button
+            type="button"
+            (click)="onLike()"
+            [disabled]="isLiked()"
+            class="rounded-full border px-4 py-2 text-sm font-medium transition-colors disabled:cursor-default"
+            [class.border-slate-300]="!isLiked()"
+            [class.text-slate-600]="!isLiked()"
+            [class.hover:bg-slate-50]="!isLiked()"
+            [class.border-rose-200]="isLiked()"
+            [class.bg-rose-50]="isLiked()"
+            [class.text-rose-600]="isLiked()"
+          >
+            {{ isLiked() ? '♥ Liked' : '♡ Like this article' }}
+          </button>
+        </div>
       </div>
     </article>
   }

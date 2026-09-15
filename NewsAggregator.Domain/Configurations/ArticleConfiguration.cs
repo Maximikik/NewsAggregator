@@ -24,6 +24,9 @@ public sealed class ArticleConfiguration
             .IsRequired()
             .HasMaxLength(2000);
 
+        builder.Property(x => x.ImageUrl)
+            .HasMaxLength(2000);
+
         builder.Property(x => x.PublishedAt)
             .IsRequired();
 

@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Article } from '../../core/models/article.models';
 
@@ -13,7 +13,13 @@ export class ArticleCard {
   readonly showLikeButton = input(true);
   readonly liked = output<string>();
 
+  readonly imageFailed = signal(false);
+
   onLike(): void {
     this.liked.emit(this.article().id);
+  }
+
+  onImageError(): void {
+    this.imageFailed.set(true);
   }
 }

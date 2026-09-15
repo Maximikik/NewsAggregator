@@ -4,4 +4,5 @@ public sealed record ArticleResponse(
     Guid Id,
     string Title,
     string Description,
-    string Source);
+    string Source,
+    string? ImageUrl);

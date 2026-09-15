@@ -13,6 +13,9 @@ internal sealed class GetAllArticlesQueryHandler(
 {
     public async ValueTask<Result<ArticlesResponse>> Handle(GetAllArticlesQuery request, CancellationToken cancellationToken)
     {
+        var totalCount = await _context.Articles
+            .CountAsync(cancellationToken);
+
         var articles = await _context.Articles
             .Include(x => x.Source)
             .OrderByDescending(x => x.CreatedAt)
@@ -24,6 +27,7 @@ internal sealed class GetAllArticlesQueryHandler(
             .Success(new ArticlesResponse(
                 request.PageNumber,
                 request.PageSize,
+                totalCount,
                 articles.Select(ArticleMapper.ToResponse))
             );
     }

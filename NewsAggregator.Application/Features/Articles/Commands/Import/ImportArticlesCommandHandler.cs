@@ -64,7 +64,8 @@ internal sealed class ImportArticlesCommandHandler(
                     rssArticle.Description,
                     rssArticle.Url,
                     rssArticle.PublishedAt,
-                    source.Id);
+                    source.Id,
+                    rssArticle.ImageUrl);
 
             foreach (var categoryName
                 in rssArticle.Categories)

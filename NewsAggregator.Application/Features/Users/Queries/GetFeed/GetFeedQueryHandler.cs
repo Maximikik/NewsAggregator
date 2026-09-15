@@ -73,7 +73,8 @@ internal sealed class GetFeedQueryHandler(
                             x.Article.Id,
                             x.Article.Title,
                             x.Article.Description,
-                            x.Article.Source.Name
+                            x.Article.Source.Name,
+                            x.Article.ImageUrl
                             )).ToList();
 
         return Result<
