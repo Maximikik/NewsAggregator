@@ -7,5 +7,6 @@ namespace NewsAggregator.Application.Features.Articles.Shared;
 [Mapper]
 public static partial class ArticleMapper
 {
+    [MapProperty("Source.Name", nameof(ArticleResponse.Source))]
     public static partial ArticleResponse ToResponse(Article article);
 }
