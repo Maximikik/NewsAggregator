@@ -29,7 +29,7 @@ internal sealed class ImportArticlesForAllSourcesCommandHandler(
                 cancellationToken);
         }
 
-        _cache.RemoveByPrefix(CacheKeys.Articles);
+        await _cache.RemoveByPrefixAsync(CacheKeys.Articles);
 
         return Result.Success();
     }

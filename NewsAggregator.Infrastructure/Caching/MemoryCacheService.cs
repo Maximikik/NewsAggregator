@@ -9,15 +9,18 @@ public class MemoryCacheService(
 {
     private readonly HashSet<string> _keys = [];
 
-    public T? Get<T>(string key)
+    public Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
     {
-        return _cache.Get<T>(key);
+        return Task.FromResult(
+            _cache.Get<T>(key)
+            );
     }
 
-    public void Set<T>(
+    public Task SetAsync<T>(
         string key,
         T value,
-        TimeSpan expiration)
+        TimeSpan expiration,
+        CancellationToken cancellationToken = default)
     {
         _cache.Set(
             key,
@@ -25,16 +28,20 @@ public class MemoryCacheService(
             expiration);
 
         _keys.Add(key);
+
+        return Task.CompletedTask;
     }
 
-    public void Remove(string key)
+    public Task RemoveAsync(string key, CancellationToken cancellation = default)
     {
         _cache.Remove(key);
 
         _keys.Remove(key);
+
+        return Task.CompletedTask;
     }
 
-    public void RemoveByPrefix(string prefix)
+    public Task RemoveByPrefixAsync(string prefix, CancellationToken cancellation = default)
     {
         var keys =
             _keys
@@ -50,5 +57,7 @@ public class MemoryCacheService(
 
             _keys.Remove(key);
         }
+
+        return Task.CompletedTask;
     }
 }

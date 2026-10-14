@@ -11,6 +11,7 @@ using NewsAggregator.Infrastructure.Caching;
 using NewsAggregator.Infrastructure.Persistence;
 using NewsAggregator.Infrastructure.Rss;
 using NewsAggregator.Infrastructure.Services;
+using StackExchange.Redis;
 
 namespace NewsAggregator.Infrastructure;
 
@@ -51,8 +52,24 @@ public static class DependencyInjection
         services.AddScoped<IUserContext,
             UserContext>();
 
-        services.AddSingleton<ICacheService,
-            MemoryCacheService>();
+        if (configuration.GetValue<bool>("UseRedisCache"))
+        {
+            var redisConnectionString =
+                configuration.GetConnectionString("Redis")
+                ?? throw new InvalidOperationException("Redis connection string is not configured");
+
+            var redisOptions = ConfigurationOptions.Parse(redisConnectionString);
+            redisOptions.AllowAdmin = true;
+
+            services.AddSingleton<IConnectionMultiplexer>(
+                _ => ConnectionMultiplexer.Connect(redisOptions));
+
+            services.AddSingleton<ICacheService, RedisCacheService>();
+        }
+        else
+        {
+            services.AddSingleton<ICacheService, MemoryCacheService>();
+        }
 
         var connectionString = configuration
             .GetConnectionString(

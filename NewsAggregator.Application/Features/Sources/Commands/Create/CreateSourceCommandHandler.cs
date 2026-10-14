@@ -40,7 +40,7 @@ internal sealed class CreateSourceCommandHandler(
         await _context.SaveChangesAsync(
             cancellationToken);
 
-        _cache.Remove("sources");
+        await _cache.RemoveAsync("sources");
 
         return Result<CreateSourceResponse>
             .Success(

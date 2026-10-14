@@ -12,8 +12,9 @@ internal sealed class CacheBehavior<TMessage, TResult>(
     public async ValueTask<TResult> Handle(TMessage message, MessageHandlerDelegate<TMessage, TResult> next, CancellationToken cancellationToken)
     {
         var cached =
-               _cache.Get<TResult>(
-                   message.CacheKey);
+               await _cache.GetAsync<TResult>(
+                   message.CacheKey,
+                   cancellationToken);
 
         if (cached is not null)
         {
@@ -28,10 +29,11 @@ internal sealed class CacheBehavior<TMessage, TResult>(
                 message,
                 cancellationToken);
 
-        _cache.Set(
+        await _cache.SetAsync(
             message.CacheKey,
             result,
-            message.Expiration);
+            message.Expiration,
+            cancellationToken);
 
         return result;
     }

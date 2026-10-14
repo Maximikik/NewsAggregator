@@ -96,7 +96,7 @@ internal sealed class ImportArticlesCommandHandler(
         await _context.SaveChangesAsync(
             cancellationToken);
 
-        _cache.RemoveByPrefix(CacheKeys.Articles);
+        await _cache.RemoveByPrefixAsync(CacheKeys.Articles);
 
         return Result.Success();
     }
