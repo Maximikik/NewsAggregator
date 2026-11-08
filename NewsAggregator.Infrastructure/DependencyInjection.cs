@@ -6,11 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 using NewsAggregator.Application.Common.Authentication;
 using NewsAggregator.Application.Common.Caching;
 using NewsAggregator.Application.Common.Interfaces;
+using NewsAggregator.Application.Common.Messaging;
 using NewsAggregator.Infrastructure.Authentication;
 using NewsAggregator.Infrastructure.Caching;
+using NewsAggregator.Infrastructure.Messaging;
 using NewsAggregator.Infrastructure.Persistence;
 using NewsAggregator.Infrastructure.Rss;
 using NewsAggregator.Infrastructure.Services;
+using RabbitMQ.Client;
 using StackExchange.Redis;
 
 namespace NewsAggregator.Infrastructure;
@@ -18,6 +21,35 @@ namespace NewsAggregator.Infrastructure;
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddShared(configuration);
+
+        services.AddScoped<IUserContext, UserContext>();
+
+        var connectionString = configuration
+            .GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException();
+
+        services.AddHangfire(
+            x =>
+                x.UsePostgreSqlStorage(
+                    options =>
+                        options.UseNpgsqlConnection(
+                            connectionString)));
+
+        return services;
+    }
+
+    public static IServiceCollection AddWorkerInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        return services.AddShared(configuration);
+    }
+
+    private static IServiceCollection AddShared(
         this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -41,22 +73,18 @@ public static class DependencyInjection
 
         services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
 
+        services.AddHttpClient();
+
+        services.AddScoped<IRssParser, RssParser>();
+
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
 
-        services.AddHttpClient();
-
-        services.AddScoped<IRssParser,
-            RssParser>();
-
-        services.AddScoped<IUserContext,
-            UserContext>();
-
         if (configuration.GetValue<bool>("UseRedisCache"))
         {
-            var redisConnectionString =
-                configuration.GetConnectionString("Redis")
-                ?? throw new InvalidOperationException("Redis connection string is not configured");
+            var redisConnectionString = configuration
+                .GetConnectionString("Redis")
+                ?? throw new InvalidOperationException("Redis connection string is not configured.");
 
             var redisOptions = ConfigurationOptions.Parse(redisConnectionString);
             redisOptions.AllowAdmin = true;
@@ -71,17 +99,29 @@ public static class DependencyInjection
             services.AddSingleton<ICacheService, MemoryCacheService>();
         }
 
-        var connectionString = configuration
-            .GetConnectionString(
-                "DefaultConnection")
-            ?? throw new InvalidOperationException();
+        services.Configure<RabbitMqOptions>(
+            configuration.GetSection(RabbitMqOptions.SectionName));
 
-        services.AddHangfire(
-            x =>
-                x.UsePostgreSqlStorage(
-                    options =>
-                        options.UseNpgsqlConnection(
-                            connectionString)));
+        var rabbitMqOptions = configuration
+            .GetSection(RabbitMqOptions.SectionName)
+            .Get<RabbitMqOptions>()!;
+
+        var connectionFactory = new ConnectionFactory
+        {
+            HostName = rabbitMqOptions.HostName,
+            Port = rabbitMqOptions.Port,
+            UserName = rabbitMqOptions.UserName,
+            Password = rabbitMqOptions.Password
+        };
+
+        var connection = connectionFactory.CreateConnectionAsync().GetAwaiter().GetResult();
+        var channel = connection.CreateChannelAsync().GetAwaiter().GetResult();
+
+        RabbitMqTopology.DeclareAsync(channel).GetAwaiter().GetResult();
+
+        services.AddSingleton(connection);
+        services.AddSingleton(channel);
+        services.AddSingleton<IMessagePublisher, RabbitMqMessagePublisher>();
 
         return services;
     }

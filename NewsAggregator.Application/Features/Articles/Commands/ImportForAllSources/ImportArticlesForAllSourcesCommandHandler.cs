@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NewsAggregator.Application.Common.Caching;
 using NewsAggregator.Application.Common.Interfaces;
+using NewsAggregator.Application.Common.Messaging;
 using NewsAggregator.Application.Common.Results;
 using NewsAggregator.Application.Features.Articles.Commands.Import;
 
@@ -9,7 +10,7 @@ namespace NewsAggregator.Application.Features.Articles.Commands.ImportForAllSour
 
 internal sealed class ImportArticlesForAllSourcesCommandHandler(
     INewsAggregatorDbContext _context,
-    IMediator _mediator,
+    IMessagePublisher _publisher,
     ICacheService _cache)
     : ICommandHandler<ImportArticlesForAllSourcesCommand, Result>
 {
@@ -23,13 +24,12 @@ internal sealed class ImportArticlesForAllSourcesCommandHandler(
 
         foreach (var sourceId in sourceIds)
         {
-            await _mediator.Send(
-                new ImportArticlesCommand(
-                    sourceId),
+            await _publisher.PublishAsync(
+                new ImportArticlesCommand(sourceId),
                 cancellationToken);
         }
 
-        await _cache.RemoveByPrefixAsync(CacheKeys.Articles);
+        await _cache.RemoveByPrefixAsync(CacheKeys.Articles, cancellationToken);
 
         return Result.Success();
     }
